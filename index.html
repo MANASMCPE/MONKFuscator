@@ -312,7 +312,29 @@ $("sample").onclick=function(){src.value='local Players = game:GetService("Playe
 $("clear").onclick=function(){src.value="";out.value="";$("s1").textContent="0";$("s2").textContent="0";$("s3").textContent="-";$("s4").textContent="-";stage.textContent="";bar.style.width="0"};
 $("copy").onclick=function(){if(!out.value)return;var b=$("copy");function ok(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy"},1400)}
 function fb(){out.select();try{document.execCommand("copy");ok()}catch(x){}}
+
 if(navigator.clipboard)navigator.clipboard.writeText(out.value).then(ok,fb);else fb()};
+$("download").addEventListener("click",function(){
+ var code=out.value;
+ if(!code.trim()){stage.textContent="> Obfuscate a script first, then download it.";return}
+ var filename="ObfuscatedByMonKFuscate.luau.txt";
+ try{
+   var blob=new Blob([code],{type:"text/plain;charset=utf-8"});
+   var url=URL.createObjectURL(blob);
+   var a=document.createElement("a");
+   a.href=url;
+   a.download=filename;
+   a.style.display="none";
+   document.body.appendChild(a);
+   a.click();
+   a.remove();
+   // Keep the object URL alive briefly for mobile browsers.
+   setTimeout(function(){URL.revokeObjectURL(url)},3000);
+   stage.textContent="> Download requested: "+filename;
+ }catch(err){
+   stage.textContent="> Download blocked. Try opening this site in Chrome and allow downloads.";
+ }
+});
 function wait(ms){return new Promise(function(r){setTimeout(r,rm?0:ms)})}
 go.onclick=async function(){
 if(!src.value.trim()){src.classList.remove("shake");void src.offsetWidth;src.classList.add("shake");src.focus();return}
